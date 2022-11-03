@@ -1,3 +1,4 @@
+from flask import render_template, request, session, redirect, url_for
 import requests
 import json
 
@@ -32,4 +33,4 @@ class Client:
         self.update_stats()
         r = requests.post(self.free_node + '/writemessage', data=json.dumps(message))
         if r.status_code != 200:
-            raise (r.status_code)
+            raise ErrorCode(r.status_code)
