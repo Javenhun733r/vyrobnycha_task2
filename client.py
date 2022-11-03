@@ -1,10 +1,17 @@
-from flask import render_template, request, session, redirect, url_for
 import requests
 import json
 
 
+class ErrorCode(Exception):
+    def __init___(self, status_code):
+        self.status_code = status_code
+
+    def __str__(self):
+        return f'Error code {self.status_code}'
+
+
 class Client:
-    def init(self, adress, requests_count=1000):
+    def __init__(self, adress, requests_count=1000):
         self.adress = adress
         self.requests_count = requests_count
         self.free_node = ""
@@ -23,4 +30,6 @@ class Client:
 
     def write(self, message):
         self.update_stats()
-        request.post(self.free_node + '/writemessage', data=json.dumps(message))
+        r = requests.post(self.free_node + '/writemessage', data=json.dumps(message))
+        if r.status_code != 200:
+            raise (r.status_code)
